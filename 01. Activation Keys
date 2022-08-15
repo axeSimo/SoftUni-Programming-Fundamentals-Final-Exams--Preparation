@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace ConsoleApp10
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string activationKey = Console.ReadLine();
+
+
+            while (true)
+            {
+                string[] command = Console.ReadLine().Split(">>>");
+
+                if (command[0] == "Generate")
+                {
+                    break;
+                }
+
+
+                string action = command[0];
+                switch (action)
+                {
+                    case "Contains":
+                        activationKey = Contains(activationKey, command[1]);
+                        
+                        break;
+
+
+                    case "Flip":
+                        activationKey = Flip(activationKey, command[1], int.Parse(command[2]), int.Parse(command[3]));
+
+                        Console.WriteLine(activationKey);
+                        break;
+
+
+                    case "Slice":
+                        activationKey = Slice(activationKey, int.Parse(command[1]), int.Parse(command[2]));
+                        Console.WriteLine(activationKey);
+
+                        break;
+                }
+            }
+
+            Console.WriteLine($"Your activation key is: {activationKey}");
+        }
+
+
+        private static string Contains(string activationKey, string substring)
+        {
+            if (activationKey.Contains(substring))
+            {
+                Console.WriteLine($"{activationKey} contains {substring}");
+                return activationKey;
+            }
+            else
+            {
+                Console.WriteLine("Substring not found!");
+                return activationKey;
+            }
+        }
+
+        private static string Flip(string activationKey, string UpOrLow, int startIndex, int endIndex)
+        {
+            string oldString =activationKey.Substring(startIndex, endIndex-startIndex);
+            string newString = "";
+            if (UpOrLow == "Upper")
+            {
+
+               newString = oldString.ToUpper();
+            }
+            else
+            {
+                newString = oldString.ToLower();
+            }
+            activationKey= activationKey.Replace(oldString, newString);
+            return activationKey;
+        }
+
+        private static string Slice(string activationKey, int startIndex, int endIndex)
+        {
+            string stringToDelete = activationKey.Substring(startIndex, endIndex-startIndex);
+            activationKey = activationKey.Remove(startIndex, stringToDelete.Length);
+            return activationKey;
+        }
+    }
+}
+
+
