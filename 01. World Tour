@@ -1,0 +1,83 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ConsoleApp10
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            StringBuilder stops =new StringBuilder( Console.ReadLine());
+            
+
+            while (true)
+            {
+                string[] command = Console.ReadLine().Split(":");
+
+                if (command[0] == "Travel")
+                {
+                    Console.WriteLine($"Ready for world tour! Planned stops: {stops}");
+                    break;
+                }
+                
+                string action = command[0];
+
+                
+                switch (action)
+                {
+                   
+                    case "Add Stop":
+
+                        AddStop(int.Parse(command[1]), command[2], stops) ;
+                        break;
+                    case "Remove Stop":
+                       RemoveStop(int.Parse(command[1]), int.Parse(command[2]), stops);
+                        
+                        break;
+                    case "Switch":
+                        
+                        Switch(command[1], command[2], stops);
+                        break;
+                }
+                Console.WriteLine(stops);
+
+            }
+
+        }
+
+
+        private static void AddStop(int index, string substring, StringBuilder stops)
+        {
+            //o	Insert the given string at that index only if the index is valid
+            if (index >=0 && index < stops.Length)
+            {
+                stops.Insert(index, substring);
+               
+            }
+            
+
+        }
+        
+         private static void RemoveStop(int startIndex, int endIndex , StringBuilder stops)
+         {
+            //o	Remove the elements of the string from the starting index to the end index (inclusive) if both indices are valid
+            if (startIndex >= 0 && startIndex < stops.Length &&  endIndex >= 0 && endIndex < stops.Length)
+            {
+               stops.Remove(startIndex, endIndex-startIndex+1);
+              
+            }
+            
+        }
+
+        private static void Switch(string oldString, string replacement, StringBuilder stops)
+        {
+            //o	If the old string is in the initial string, replace it with the new one (all occurrences)
+            
+               stops.Replace(oldString, replacement);
+               
+        }
+
+    }
+}
