@@ -1,0 +1,131 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace ConsoleApp10
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int countOfHeroes = int.Parse(Console.ReadLine());
+            var heroes = new List<Hero>();
+            for (int i = 0; i < countOfHeroes; i++)
+            {
+                string[] heroProperties = Console.ReadLine().Split(" ");
+
+                Hero hero = new Hero
+                {
+                    Name = heroProperties[0],
+                    HealthPoints = int.Parse(heroProperties[1]),
+                    ManaPoints = int.Parse(heroProperties[2])
+                };
+
+                heroes.Add(hero);
+              
+            }
+
+            while (true)
+            {
+                string[] commands = Console.ReadLine().Split(" - ");
+
+                if (commands[0] == "End")
+                {
+                    break;
+                }
+
+                string action = commands[0];
+                switch (action)
+                {
+                    case "CastSpell":
+                        CastSpell(heroes, commands[1], int.Parse(commands[2]), commands[3]);
+                        break;
+                    case "TakeDamage":
+                        TakeDamage(heroes, commands[1], int.Parse(commands[2]), commands[3]);
+                        break;
+                    case "Recharge":
+                        Recharge(heroes, commands[1], int.Parse(commands[2]));
+                        break;
+                    case "Heal":
+                        Heal(heroes, commands[1], int.Parse(commands[2]));
+                        break;
+                }
+            }
+
+            foreach (var hero in heroes)
+            {
+                Console.WriteLine(hero.Name);
+                Console.WriteLine($"  HP: { hero.HealthPoints}");
+                Console.WriteLine($"  MP: {hero.ManaPoints}");
+            }
+        }
+
+        private static void CastSpell(List<Hero> heroes, string name, int manaNeeded, string spellName)
+        {
+            Hero hero =heroes.Find(x => x.Name == name);
+            if (hero.ManaPoints>=manaNeeded)
+            {
+                hero.ManaPoints -= manaNeeded;
+                Console.WriteLine($"{hero.Name} has successfully cast {spellName} and now has {hero.ManaPoints} MP!");
+            }
+            else
+            {
+                Console.WriteLine($"{hero.Name} does not have enough MP to cast {spellName}!");
+            }
+
+        }
+
+        private static void TakeDamage(List<Hero> heroes, string name, int damage, string attacker)
+        {
+            Hero hero = heroes.Find(x => x.Name == name);
+            if (hero.HealthPoints > damage)
+            {
+                hero.HealthPoints -= damage;
+                Console.WriteLine($"{hero.Name} was hit for {damage} HP by {attacker} and now has {hero.HealthPoints} HP left!");
+            }
+            else
+            {
+                Console.WriteLine($"{hero.Name} has been killed by {attacker}!");
+                heroes.Remove(hero);
+            }
+        }
+
+        private static void Recharge(List<Hero> heroes, string name, int amount)
+        {
+            Hero hero = heroes.Find(x => x.Name == name);
+            int originalMana = hero.ManaPoints;
+            hero.ManaPoints += amount;
+            if (hero.ManaPoints>200)
+            {
+                hero.ManaPoints = 200;
+            }
+                Console.WriteLine($"{hero.Name} recharged for {hero.ManaPoints-originalMana} MP!");
+        }
+
+        private static void Heal(List<Hero> heroes, string name, int amount)
+        {
+            Hero hero = heroes.Find(x => x.Name == name);
+            int originalHealth = hero.HealthPoints;
+            hero.HealthPoints += amount;
+
+            if (hero.HealthPoints >100)
+            {
+                hero.HealthPoints = 100;
+
+            }
+                Console.WriteLine($"{hero.Name} healed for {hero.HealthPoints-originalHealth} HP!");
+
+        }
+
+        class Hero
+        {
+            public string Name { get; set; }
+            public int HealthPoints { get; set; }
+            public int ManaPoints { get; set; }
+        }
+    }
+}
+
+
