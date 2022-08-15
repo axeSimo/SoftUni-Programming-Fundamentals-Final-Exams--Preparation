@@ -1,0 +1,122 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace ConsoleApp10
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var towns = new List<Town>();
+
+            while (true)
+            {
+                string[] command = Console.ReadLine().Split("||");
+
+                if (command[0] == "Sail")
+                {
+                    break;
+                }
+
+
+                Town town = new Town
+                {
+                    Name = command[0],
+                    Population = int.Parse(command[1]),
+                    Gold = int.Parse(command[2])
+                };
+
+                if (!towns.Any(x => x.Name == command[0]))
+                {
+
+                    towns.Add(town);
+                }
+                else
+                {
+                    town = towns.Find(x => x.Name == command[0]);
+                    town.Population += int.Parse(command[1]);
+                    town.Gold += int.Parse(command[2]);
+                }
+            }
+
+            while (true)
+            {
+                string[] command = Console.ReadLine().Split("=>");
+
+                if (command[0] == "End")
+                {
+                    break;
+                }
+
+                string action = command[0];
+
+                switch (action)
+                {
+                    case "Plunder":
+                        Plunder(towns, command[1], int.Parse(command[2]), int.Parse(command[3]));
+                        break;
+                    case "Prosper":
+                        Prosper(towns, command[1], int.Parse(command[2]));
+                        break;
+
+                }
+
+            }
+            if (towns.Count == 0)
+            {
+                Console.WriteLine("Ahoy, Captain! All targets have been plundered and destroyed!");
+            }
+            else
+            {
+                Console.WriteLine($"Ahoy, Captain! There are {towns.Count} wealthy settlements to go to:");
+                foreach (var town in towns)
+                {
+                    Console.WriteLine($"{town.Name} -> Population: {town.Population} citizens, Gold: {town.Gold} kg");
+                }
+            }
+        }
+
+        private static void Plunder(List<Town> towns, string name, int people, int gold)
+        {
+            Town town = towns.Find(x => x.Name == name);
+
+            town.Population -= people;
+            town.Gold -= gold;
+            Console.WriteLine($"{name} plundered! {gold} gold stolen, {people} citizens killed.");
+            if (town.Population <= 0 || town.Gold <= 0)
+            {
+                towns.Remove(town);
+                Console.WriteLine($"{name} has been wiped off the map!");
+            }
+
+
+
+
+        }
+
+        private static void Prosper(List<Town> towns, string name, int gold)
+        {
+            Town town = towns.Find(x => x.Name == name);
+            if (gold < 0)
+            {
+                Console.WriteLine("Gold added cannot be a negative number!");
+                return;
+            }
+            town.Gold += gold;
+            Console.WriteLine($"{gold} gold added to the city treasury. {name} now has {town.Gold} gold.");
+        }
+
+        public class Town
+        {
+            public string Name { get; set; }
+            public int Population { get; set; }
+            public int Gold { get; set; }
+        }
+    }
+}
+
+
